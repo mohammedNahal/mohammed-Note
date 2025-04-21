@@ -18,6 +18,10 @@ class _MyNoteScreenState extends State<MyNoteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title:  Text('My Note'),
+        leading: IconButton(onPressed: (){Navigator.pushReplacementNamed(context, '/home');}, icon: Icon(Icons.arrow_back_ios)),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestoreController().readFavorites(),
         builder: (context, snapshot) {
