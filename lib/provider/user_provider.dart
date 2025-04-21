@@ -7,10 +7,6 @@ import '../firebase/firebase_auth.dart';
 /// Provider responsible for managing user authentication
 /// and form controllers lifecycle.
 class UserProvider extends ChangeNotifier with Helper {
-
-
-
-
   // StreamSubscription for Firebase auth state changes
   StreamSubscription? _authSubscription;
 
@@ -92,6 +88,14 @@ class UserProvider extends ChangeNotifier with Helper {
     }
   }
 
+  /// Sign in using Google account
+  Future<void> signInWithGoogle({required BuildContext context}) async {
+    final success = await FirebaseAuthController().signWithGoogle(context: context);
+    if (success) {
+      appSnackBar(context: context, message: 'Google Sign-In successful', error: false);
+      Navigator.pushReplacementNamed(context, '/home');
+    }
+  }
   /// Send a password-reset email.
   Future<void> resetPassword({required BuildContext context, required GlobalKey<FormState> formKey, required TextEditingController emailController,}) async {
     if (formKey.currentState?.validate() ?? false) {

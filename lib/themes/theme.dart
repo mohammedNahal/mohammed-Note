@@ -5,7 +5,8 @@ class AppThemes {
   // لايت ثيم
   static ThemeData lightTheme() {
     return ThemeData(
-      primaryColor: Colors.teal.shade500, // اللون المفضل
+      primaryColor: Colors.teal.shade500,
+      // اللون المفضل
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.teal.shade500,
@@ -13,6 +14,11 @@ class AppThemes {
       ),
       scaffoldBackgroundColor: Colors.white,
       cardColor: Colors.white,
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStatePropertyAll(Colors.teal.shade500),
+        ),
+      ),
       textTheme: TextTheme(
         bodyLarge: TextStyle(color: Colors.black),
         bodyMedium: TextStyle(color: Colors.black87),
@@ -23,9 +29,7 @@ class AppThemes {
         backgroundColor: Colors.teal.shade500,
         foregroundColor: Colors.white,
       ),
-      buttonTheme: ButtonThemeData(
-        buttonColor: Colors.teal.shade500,
-      ),
+      buttonTheme: ButtonThemeData(buttonColor: Colors.teal.shade500),
       brightness: Brightness.light,
     );
   }
@@ -42,6 +46,11 @@ class AppThemes {
       ),
       scaffoldBackgroundColor: HexColor('#413F42'),
       cardColor: HexColor('#7F8487'),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStatePropertyAll(Colors.teal.shade500),
+        ),
+      ),
       textTheme: TextTheme(
         bodyLarge: TextStyle(color: Colors.white),
         bodyMedium: TextStyle(color: Colors.white70),
@@ -51,9 +60,7 @@ class AppThemes {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: HexColor('#7F8487'),
       ),
-      buttonTheme: ButtonThemeData(
-        buttonColor: Colors.teal.shade500,
-      ),
+      buttonTheme: ButtonThemeData(buttonColor: Colors.teal.shade500),
       brightness: Brightness.dark,
     );
   }

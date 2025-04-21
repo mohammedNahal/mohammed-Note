@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../Helpers/Helper.dart';
@@ -149,13 +150,13 @@ class _LoginScreenState extends State<LoginScreen> with Helper {
                         backgroundColor: Colors.white,
                         childColor: Colors.black,
                         onTap: () {
-                          // TODO: implement Google sign-in
+                          provider.signInWithGoogle(context: context);
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             // Assuming you have an SVG asset for Google logo
-                            // SvgPicture.asset('assets/images/google.svg'),
+                            SvgPicture.asset('images/google.svg'),
                             const SizedBox(width: 10),
                             const Text(
                               'GOOGLE',

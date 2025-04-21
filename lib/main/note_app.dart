@@ -1,3 +1,4 @@
+import 'package:final_project_note_app/screens/my_note_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,6 +54,7 @@ class NoteApp extends StatelessWidget {
         '/login/forget_pass': (context) => const ForgetPasswordScreen(),
         '/forget_pass/send_success': (context) => const SendPasswordSuccessScreen(),
         '/home': (context) => const NotesScreen(),
+        '/myNote' : (context) => const MyNoteScreen(),
       },
 
       // ثيم التطبيق

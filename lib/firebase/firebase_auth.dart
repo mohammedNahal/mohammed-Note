@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:final_project_note_app/Helpers/Helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 // تعريف نوع listener الخاص بـ Firebase Authentication
 typedef FbAuthListener = void Function({required bool status});
@@ -25,7 +26,7 @@ class FirebaseAuthController with Helper {
       if (userCredential.user != null) {
         // إذا كان المستخدم موجودًا والتحقق من البريد الإلكتروني
         if (userCredential.user!.emailVerified) {
-          return true;  // النجاح في تسجيل الدخول
+          return true; // النجاح في تسجيل الدخول
         } else {
           // إذا لم يتم التحقق من البريد الإلكتروني، أرسل رسالة تحقق
           await userCredential.user!.sendEmailVerification();
@@ -40,14 +41,49 @@ class FirebaseAuthController with Helper {
     } catch (error) {
       print(error.toString());
     }
-    return false;  // فشل في تسجيل الدخول
+    return false; // فشل في تسجيل الدخول
   }
 
   /// دالة لاكتشاف حالة المستخدم وتغيير الواجهة بناءً على الحالة
   StreamSubscription checkUserState({required FbAuthListener listener}) {
     return _auth.authStateChanges().listen(
-          (user) => listener(status: user != null),  // إذا كان المستخدم موجودًا
+      (user) => listener(status: user != null), // إذا كان المستخدم موجودًا
     );
+  }
+
+  Future<bool> signWithGoogle({required BuildContext context}) async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        appSnackBar(context: context, message: "Canceled.", error: true);
+        return false;
+      }
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
+      if (userCredential.user != null) {
+        return true;
+      }
+      return false;
+    } on FirebaseAuthException catch (error) {
+      appSnackBar(context: context, message: error.message ?? 'Error happen.', error: true);
+      return false;
+    } catch (error) {
+      print("Google Sign-In Error: $error");
+      appSnackBar(
+        context: context,
+        message: 'Error in Sign in with google.',
+        error: true,
+      );
+      return false;
+    }
   }
 
   /// دالة للتسجيل باستخدام البريد الإلكتروني وكلمة المرور
@@ -73,7 +109,7 @@ class FirebaseAuthController with Helper {
     } catch (error) {
       print(error.toString());
     }
-    return false;  // فشل في التسجيل
+    return false; // فشل في التسجيل
   }
 
   /// دالة لإرسال بريد إلكتروني لإعادة تعيين كلمة المرور
@@ -84,18 +120,18 @@ class FirebaseAuthController with Helper {
     try {
       // إرسال بريد إلكتروني لإعادة تعيين كلمة المرور
       await _auth.sendPasswordResetEmail(email: email);
-      return true;  // نجاح إرسال البريد
+      return true; // نجاح إرسال البريد
     } on FirebaseAuthException catch (exception) {
       // إذا حدث خطأ أثناء إرسال البريد، عرض رسالة الخطأ
       appSnackBar(context: context, message: exception.code, error: true);
     } catch (error) {
       print(error.toString());
     }
-    return false;  // فشل في إرسال البريد
+    return false; // فشل في إرسال البريد
   }
 
   /// دالة لتسجيل الخروج
   Future<void> signOut() async {
-    await _auth.signOut();  // تنفيذ عملية تسجيل الخروج
+    await _auth.signOut(); // تنفيذ عملية تسجيل الخروج
   }
 }

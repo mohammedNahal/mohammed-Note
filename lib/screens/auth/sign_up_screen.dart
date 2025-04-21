@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../Helpers/Helper.dart';
@@ -42,9 +43,27 @@ class _SignUpScreenState extends State<SignUpScreen> with Helper {
     super.dispose();
   }
 
+  void clean() {
+    _emailController.text = '';
+    _passwordController.text = '';
+    _rePasswordController.text = '';
+    _fullNameController.text = '';
+    _phoneNumberController.text = '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Sign Up'),
+        leading: IconButton(
+          onPressed: () {
+            clean();
+            Navigator.pushReplacementNamed(context, '/login');
+          },
+          icon: Icon(Icons.arrow_back_ios),
+        ),
+      ),
       // نضع المحتوى داخل SafeArea لتجنب تداخله مع الـ status bar
       body: SafeArea(
         child: Consumer<UserProvider>(
@@ -169,6 +188,40 @@ class _SignUpScreenState extends State<SignUpScreen> with Helper {
                                 formKey: _formKey,
                               ),
                           child: const Text('Sign Up'),
+                        ),
+                        const SizedBox(height: 20),
+
+                        const Text(
+                          '- OR SIGN IN WITH -',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+
+                        // Example Google sign-in button
+                        AppButton(
+                          height: 60,
+                          borderRadius: 7,
+                          backgroundColor: Colors.white,
+                          childColor: Colors.black,
+                          onTap: () {
+                            provider.signInWithGoogle(context: context);
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Assuming you have an SVG asset for Google logo
+                              SvgPicture.asset('images/google.svg'),
+                              const SizedBox(width: 10),
+                              const Text(
+                                'GOOGLE',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
