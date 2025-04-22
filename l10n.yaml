@@ -1,0 +1,14 @@
+# This file is named 'l10n.yaml' because 'l10n' is a common abbreviation for 'localization':
+# it starts with 'l', ends with 'n', and has 10 letters in between.
+
+# Directory where the localization files (.arb) are stored
+arb-dir: lib/l10n
+
+# The main template ARB file that contains default (usually English) strings
+template-arb-file: intl_en.arb
+
+# The name of the generated Dart file that will contain the localization logic
+output-localization-file: app_localizations.dart
+
+# The name of the Dart class that will be generated and used to access localized strings
+output-class: AppLocalizations

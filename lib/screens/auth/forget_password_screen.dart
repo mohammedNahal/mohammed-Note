@@ -1,21 +1,23 @@
+import 'package:final_project_note_app/widgets/language_toggle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../Helpers/Helper.dart';
+import '../../generated/l10n.dart';
 import '../../provider/user_provider.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_text_field.dart';
 
-/// Screen that lets the user request a password reset email.
+/// Screen for requesting a password reset email.
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
 
   @override
-  State<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
+  _ForgetPasswordScreenState createState() => _ForgetPasswordScreenState();
 }
 
-class _ForgetPasswordScreenState extends State<ForgetPasswordScreen>
-    with Helper {
+class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> with Helper {
   late TextEditingController _emailController;
   final _formKey = GlobalKey<FormState>();
 
@@ -33,14 +35,17 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen>
 
   @override
   Widget build(BuildContext context) {
+    final local = S.of(context);
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          LanguageToggleButton(),
+        ],
         leading: IconButton(
-          // Return to login if user taps back
           onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        title: const Text('Reset Password'),
+        title: Text(local.resetPassword),
       ),
       body: Consumer<UserProvider>(
         builder: (_, provider, __) {
@@ -49,52 +54,52 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen>
             child: ListView(
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                const Text('Forgot your password?'),
+                Text(local.forgotPasswordTitle),
                 const SizedBox(height: 8),
-                const Text(
-                  'Enter your email address below to receive a password reset link.',
-                  style: TextStyle(fontSize: 13, color: Colors.grey),
+                Text(
+                  local.forgotPasswordDescription,
+                  style: const TextStyle(fontSize: 13, color: Colors.grey),
                 ),
                 const SizedBox(height: 20),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      /// Email input field
-                      AppTextField(
-                        controller: _emailController,
-                        hint: 'E-mail',
-                        prefix: Icons.email_outlined,
-                        borderRadius: 7,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'E-mail is required';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 25),
-
-                      /// Send reset email button
-                      AppButton(
-                        borderRadius: 7,
-                        backgroundColor: Colors.teal.shade500,
-                        onTap:
-                            () => provider.resetPassword(
-                              context: context,
-                              emailController: _emailController,
-                              formKey: _formKey,
-                            ),
-                        child: const Text('Send'),
-                      ),
-                    ],
-                  ),
-                ),
+                _buildForm(provider, local),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildForm(UserProvider provider, S local) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppTextField(
+            controller: _emailController,
+            hint: local.email,
+            prefix: Icons.email_outlined,
+            borderRadius: 7,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return local.emailRequired;
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 25),
+          AppButton(
+            borderRadius: 7,
+            backgroundColor: Colors.teal.shade500,
+            onTap: () => provider.resetPassword(
+              context: context,
+              emailController: _emailController,
+              formKey: _formKey,
+            ),
+            child: Text(local.send),
+          ),
+        ],
       ),
     );
   }

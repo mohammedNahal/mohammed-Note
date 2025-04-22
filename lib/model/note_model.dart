@@ -20,19 +20,19 @@ class Note {
     this.createdAt = '',
   });
 
-  /// Named constructor to create a Note from a Firestore document snapshot.
+  /// Creates a Note instance from a Firestore document map.
   ///
-  /// [docData] is the map payload of the document.
-  /// [documentId] is the Firestore-generated document ID.
+  /// [docData] contains the note data retrieved from Firestore.
+  /// [documentId] is the unique Firestore document ID.
   Note.fromMap(Map<String, dynamic> docData, {required String documentId})
       : id = documentId,
         title = docData['title'] as String? ?? '',
         details = docData['details'] as String? ?? '',
         createdAt = docData['createdAt'] as String? ?? '';
 
-  /// Converts this Note instance into a Map suitable for Firestore operations.
+  /// Converts the Note instance into a map to be stored in Firestore.
   ///
-  /// Does not include [id], since Firestore uses the document ID separately.
+  /// Note: [id] is not included because Firestore handles it separately.
   Map<String, dynamic> toMap() {
     return {
       'title': title,

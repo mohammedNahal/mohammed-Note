@@ -96,6 +96,7 @@ class UserProvider extends ChangeNotifier with Helper {
       Navigator.pushReplacementNamed(context, '/home');
     }
   }
+
   /// Send a password-reset email.
   Future<void> resetPassword({required BuildContext context, required GlobalKey<FormState> formKey, required TextEditingController emailController,}) async {
     if (formKey.currentState?.validate() ?? false) {
@@ -114,5 +115,4 @@ class UserProvider extends ChangeNotifier with Helper {
     await FirebaseAuthController().signOut();
     Navigator.pushReplacementNamed(context, '/login');
   }
-
 }

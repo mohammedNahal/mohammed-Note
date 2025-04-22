@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-
 import '../../Helpers/Helper.dart';
+import '../../generated/l10n.dart';
 import '../../provider/user_provider.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_text_field.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-/// شاشة تسجيل مستخدم جديد (Sign Up)
+import '../../widgets/language_toggle_button.dart';
+
+/// Screen for user registration (Sign Up)
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -16,16 +19,21 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> with Helper {
-  late TextEditingController _emailController,
-      _passwordController,
-      _rePasswordController,
-      _fullNameController,
-      _phoneNumberController;
+  late TextEditingController _emailController;
+  late TextEditingController _passwordController;
+  late TextEditingController _rePasswordController;
+  late TextEditingController _fullNameController;
+  late TextEditingController _phoneNumberController;
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
+    _initializeControllers();
+  }
+
+  // Initialize all controllers
+  void _initializeControllers() {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _rePasswordController = TextEditingController();
@@ -35,202 +43,201 @@ class _SignUpScreenState extends State<SignUpScreen> with Helper {
 
   @override
   void dispose() {
+    _disposeControllers();
+    super.dispose();
+  }
+
+  // Dispose all controllers
+  void _disposeControllers() {
     _emailController.dispose();
     _passwordController.dispose();
     _rePasswordController.dispose();
     _fullNameController.dispose();
     _phoneNumberController.dispose();
-    super.dispose();
   }
 
-  void clean() {
-    _emailController.text = '';
-    _passwordController.text = '';
-    _rePasswordController.text = '';
-    _fullNameController.text = '';
-    _phoneNumberController.text = '';
+  // Clean the form fields
+  void _cleanForm() {
+    _emailController.clear();
+    _passwordController.clear();
+    _rePasswordController.clear();
+    _fullNameController.clear();
+    _phoneNumberController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    final local = S.of(context); // Localized text reference
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign Up'),
-        leading: IconButton(
-          onPressed: () {
-            clean();
-            Navigator.pushReplacementNamed(context, '/login');
-          },
-          icon: Icon(Icons.arrow_back_ios),
-        ),
-      ),
-      // نضع المحتوى داخل SafeArea لتجنب تداخله مع الـ status bar
+      appBar: _buildAppBar(local),
       body: SafeArea(
         child: Consumer<UserProvider>(
           builder: (_, provider, __) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: ListView(
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  // عنوان وترحيب
-                  const Text('Welcome...'),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Create an account to start taking notes.',
-                    style: TextStyle(fontSize: 13, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // نموذج التسجيل
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // الاسم الكامل
-                        AppTextField(
-                          controller: _fullNameController,
-                          hint: 'Full Name',
-                          prefix: Icons.person_2_outlined,
-                          borderRadius: 7,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Full name is required';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 10),
-
-                        // البريد الإلكتروني
-                        AppTextField(
-                          controller: _emailController,
-                          hint: 'E‑mail',
-                          prefix: Icons.email_outlined,
-                          borderRadius: 7,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'E‑mail is required';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 10),
-
-                        // كلمة المرور
-                        AppTextField(
-                          controller: _passwordController,
-                          hint: 'Password',
-                          prefix: Icons.lock_outline,
-                          obscureText: provider.isPasswordObscured,
-                          suffix: IconButton(
-                            icon: Icon(provider.passwordIcon),
-                            onPressed: provider.togglePasswordVisibility,
-                          ),
-                          borderRadius: 7,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Password is required';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 10),
-
-                        // إعادة كتابة كلمة المرور
-                        AppTextField(
-                          controller: _rePasswordController,
-                          hint: 'Confirm Password',
-                          prefix: Icons.lock_outline,
-                          obscureText: provider.isRePasswordObscured,
-                          suffix: IconButton(
-                            icon: Icon(provider.rePasswordIcon),
-                            onPressed: provider.toggleRePasswordVisibility,
-                          ),
-                          borderRadius: 7,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please confirm your password';
-                            }
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 10),
-
-                        // رقم الهاتف
-                        AppTextField(
-                          controller: _phoneNumberController,
-                          hint: 'Phone Number',
-                          prefix: Icons.phone,
-                          borderRadius: 7,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Phone number is required';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 25),
-
-                        // زر تسجيل الحساب
-                        AppButton(
-                          borderRadius: 7,
-                          backgroundColor: Colors.teal.shade500,
-                          onTap:
-                              () => provider.signup(
-                                context: context,
-                                passwordController: _passwordController,
-                                emailController: _emailController,
-                                formKey: _formKey,
-                              ),
-                          child: const Text('Sign Up'),
-                        ),
-                        const SizedBox(height: 20),
-
-                        const Text(
-                          '- OR SIGN IN WITH -',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-
-                        // Example Google sign-in button
-                        AppButton(
-                          height: 60,
-                          borderRadius: 7,
-                          backgroundColor: Colors.white,
-                          childColor: Colors.black,
-                          onTap: () {
-                            provider.signInWithGoogle(context: context);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Assuming you have an SVG asset for Google logo
-                              SvgPicture.asset('images/google.svg'),
-                              const SizedBox(width: 10),
-                              const Text(
-                                'GOOGLE',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              child: _buildForm(context, provider, local),
             );
           },
         ),
+      ),
+    );
+  }
+
+  // Build the AppBar with back navigation
+  AppBar _buildAppBar(S local) {
+    return AppBar(
+      actions: [
+        LanguageToggleButton(),
+      ],
+      title: Text(local.signUp), // 'Sign Up'
+      leading: IconButton(
+        onPressed: () {
+          _cleanForm();
+          Navigator.pushReplacementNamed(context, '/login');
+        },
+        icon: const Icon(Icons.arrow_back_ios),
+      ),
+    );
+  }
+
+  // Build the form with all input fields and buttons
+  Widget _buildForm(BuildContext context, UserProvider provider, S local) {
+    return ListView(
+      physics: const BouncingScrollPhysics(),
+      children: [
+        _buildWelcomeText(local),
+        const SizedBox(height: 20),
+        _buildRegistrationForm(context, provider, local),
+      ],
+    );
+  }
+
+  // Build the welcome text at the top of the form
+  Widget _buildWelcomeText(S local) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(local.welcome), // 'Welcome...'
+        const SizedBox(height: 8),
+        Text(
+          local.createAccountToStartTakingNotes, // 'Create an account to start taking notes.'
+          style: const TextStyle(fontSize: 13, color: Colors.grey),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  // Build the registration form fields
+  Widget _buildRegistrationForm(BuildContext context, UserProvider provider, S local) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildTextField(_fullNameController, local.fullName, Icons.person_2_outlined, local.fullNameRequired),
+          const SizedBox(height: 10),
+          _buildTextField(_emailController, local.email, Icons.email_outlined, local.emailRequired),
+          const SizedBox(height: 10),
+          _buildPasswordField(_passwordController, local.password, provider.isPasswordObscured, provider.passwordIcon, provider.togglePasswordVisibility, local.passwordRequired),
+          const SizedBox(height: 10),
+          _buildPasswordField(_rePasswordController, local.confirmPassword, provider.isRePasswordObscured, provider.rePasswordIcon, provider.toggleRePasswordVisibility, local.confirmPasswordRequired, confirmPassword: true),
+          const SizedBox(height: 10),
+          _buildTextField(_phoneNumberController, local.phoneNumber, Icons.phone, local.phoneNumberRequired),
+          const SizedBox(height: 25),
+          _buildSignUpButton(provider, context, local),
+          const SizedBox(height: 20),
+          _buildOrSignInWithText(local),
+          const SizedBox(height: 15),
+          _buildGoogleSignInButton(provider, context),
+        ],
+      ),
+    );
+  }
+
+  // Build a regular text field with validation
+  Widget _buildTextField(TextEditingController controller, String hint, IconData prefix, String validationMessage) {
+    return AppTextField(
+      controller: controller,
+      hint: hint,
+      prefix: prefix,
+      borderRadius: 7,
+      validator: (value) => (value == null || value.isEmpty) ? validationMessage : null,
+    );
+  }
+
+  // Build password fields with visibility toggle
+  Widget _buildPasswordField(TextEditingController controller, String hint, bool obscureText, IconData suffixIcon, VoidCallback toggleVisibility, String validationMessage, {bool confirmPassword = false}) {
+    return AppTextField(
+      controller: controller,
+      hint: hint,
+      prefix: Icons.lock_outline,
+      obscureText: obscureText,
+      suffix: IconButton(
+        icon: Icon(suffixIcon),
+        onPressed: toggleVisibility,
+      ),
+      borderRadius: 7,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return validationMessage;
+        }
+        if (confirmPassword && value != _passwordController.text) {
+          return 'Passwords do not match'; // 'كلمات المرور غير متطابقة'
+        }
+        return null;
+      },
+    );
+  }
+
+  // Build the sign-up button
+  Widget _buildSignUpButton(UserProvider provider, BuildContext context, S local) {
+    return AppButton(
+      borderRadius: 7,
+      backgroundColor: Colors.teal.shade500,
+      onTap: () => provider.signup(
+        context: context,
+        passwordController: _passwordController,
+        emailController: _emailController,
+        formKey: _formKey,
+      ),
+      child: Text(local.signUp), // 'Sign Up'
+    );
+  }
+
+  // Build the "OR SIGN IN WITH" text
+  Widget _buildOrSignInWithText(S local) {
+    return Text(
+      local.orSignInWith, // '- OR SIGN IN WITH -'
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.grey,
+      ),
+    );
+  }
+
+  // Build the Google sign-in button
+  Widget _buildGoogleSignInButton(UserProvider provider, BuildContext context) {
+    return AppButton(
+      height: 60,
+      borderRadius: 7,
+      backgroundColor: Colors.white,
+      childColor: Colors.black,
+      onTap: () {
+        provider.signInWithGoogle(context: context);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset('images/google.svg'),
+          const SizedBox(width: 10),
+          const Text(
+            'GOOGLE',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
     );
   }

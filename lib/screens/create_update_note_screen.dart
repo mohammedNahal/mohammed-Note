@@ -3,19 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../generated/l10n.dart';
 import '../model/note_model.dart';
 import '../provider/note_provider.dart';
 
-/// شاشة إنشاء أو تعديل الملاحظة
-/// - إذا كان [widget.note] موجودًا، يتم تعبئة الحقول بالقيم الحالية للملاحظة.
-/// - خلاف ذلك، تُعرض حقول فارغة لإضافة ملاحظة جديدة.
+/// Create or update note screen.
+/// - If [widget.note] exists, the fields are populated with the current note values.
+/// - Otherwise, blank fields are shown for creating a new note.
 class CreateUpdateNoteScreen extends StatefulWidget {
   const CreateUpdateNoteScreen({super.key, this.title = 'Create', this.note});
 
-  /// عنوان الشاشة ('Create' أو 'Update')
+  /// The title of the screen ('Create' or 'Update')
   final String title;
 
-  /// الملاحظة الموجودة في حال التعديل (يمكن أن تكون null عند الإنشاء)
+  /// The existing note for update (can be null when creating a new note)
   final Note? note;
 
   @override
@@ -56,13 +57,13 @@ class _CreateUpdateNoteScreenState extends State<CreateUpdateNoteScreen> {
           IconButton(
             icon: const Icon(CupertinoIcons.check_mark),
             onPressed: () {
-              // حفظ الملاحظة؛ يمرر الملاحظة الحالية (إن وجدت) كـ existingNote
-              Provider.of<NoteProvider>(context,listen: false).saveNote(
+              // Save the note and pass the current note (if any) as existingNote
+              Provider.of<NoteProvider>(context, listen: false).saveNote(
                 context: context,
                 detailsController: _detailsController,
                 titleController: _titleController,
                 formattedDate: _formattedDate,
-                noteId: widget.note?.id, // إذا كانت الملاحظة موجودة نمرر الـ ID
+                noteId: widget.note?.id, // Pass the ID if the note exists
               );
               Navigator.pushReplacementNamed(context, '/home');
               clean();
@@ -70,7 +71,7 @@ class _CreateUpdateNoteScreenState extends State<CreateUpdateNoteScreen> {
           ),
         ],
       ),
-      // SafeArea لتجنب تداخل المحتوى مع حواف النظام
+      // SafeArea to avoid overlapping with system's safe areas
       body: SafeArea(
         child: Consumer<NoteProvider>(
           builder: (_, provider, __) {
@@ -78,32 +79,32 @@ class _CreateUpdateNoteScreenState extends State<CreateUpdateNoteScreen> {
               physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.all(16),
               children: [
-                // حقل عنوان الملاحظة
+                // Title input field
                 TextField(
                   controller: _titleController,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
-                  decoration: const InputDecoration(
-                    hintText: 'Title',
+                  decoration: InputDecoration(
+                    hintText: S.of(context).title, // Using translation
                     border: InputBorder.none,
                   ),
                 ),
                 const SizedBox(height: 8),
 
-                // عرض التاريخ والوقت المهيأ عند الإنشاء/التعديل
+                // Display the formatted date and time when created/updated
                 Text(
                   _formattedDate,
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(height: 16),
 
-                // حقل تفاصيل الملاحظة
+                // Description input field
                 TextField(
                   controller: _detailsController,
-                  decoration: const InputDecoration(
-                    hintText: 'Description',
+                  decoration: InputDecoration(
+                    hintText: S.of(context).description, // Using translation
                     border: InputBorder.none,
                   ),
                   maxLines: null,
@@ -116,7 +117,7 @@ class _CreateUpdateNoteScreenState extends State<CreateUpdateNoteScreen> {
     );
   }
 
-  void clean(){
+  void clean() {
     _titleController.text = '';
     _detailsController.text = '';
   }

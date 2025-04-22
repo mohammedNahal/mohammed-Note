@@ -8,9 +8,9 @@ import '../model/note_model.dart';
 import '../screens/create_update_note_screen.dart';
 import '../search/search_delegate.dart';
 
-/// Provider المسؤول عن إدارة العمليات المتعلقة بالملاحظات
+/// Provider responsible for managing note-related operations
 class NoteProvider extends ChangeNotifier with Helper {
-  /// بناء نموذج الملاحظة بناءً على قيم الـ TextEditingController
+  /// Build a Note model based on the TextEditingController values.
   Note buildNote({
     String? existingId,
     required TextEditingController titleController,
@@ -25,7 +25,7 @@ class NoteProvider extends ChangeNotifier with Helper {
     );
   }
 
-  /// حفظ الملاحظة: إنشاء إذا كان [noteId] فارغ أو تحديث إذا كان موجوداً
+  /// Save the note: create if [noteId] is null, or update if it exists.
   Future<void> saveNote({
     String? noteId,
     required BuildContext context,
@@ -41,16 +41,16 @@ class NoteProvider extends ChangeNotifier with Helper {
         formattedDate: formattedDate,
       );
       final success =
-          noteId == null
-              ? await FirebaseFirestoreController().create(note: note)
-              : await FirebaseFirestoreController().update(note: note);
+      noteId == null
+          ? await FirebaseFirestoreController().create(note: note)
+          : await FirebaseFirestoreController().update(note: note);
 
       appSnackBar(
         context: context,
         message:
-            noteId == null
-                ? 'Note added successfully.'
-                : 'Note updated successfully.',
+        noteId == null
+            ? 'Note added successfully.'
+            : 'Note updated successfully.',
         error: !success,
       );
     } catch (e) {
@@ -62,7 +62,7 @@ class NoteProvider extends ChangeNotifier with Helper {
     }
   }
 
-  /// تحويل مستند Firestore إلى كائن Note
+  /// Converts Firestore snapshot into a Note object.
   Note noteFromSnapshot(QueryDocumentSnapshot snapshot) {
     return Note.fromMap(
       snapshot.data() as Map<String, dynamic>,
@@ -70,7 +70,7 @@ class NoteProvider extends ChangeNotifier with Helper {
     );
   }
 
-  /// عند النقر على بطاقة الملاحظة: الانتقال لشاشة التعديل
+  /// Navigate to the edit screen when a note card is tapped.
   void onTapNote({
     required BuildContext context,
     required QueryDocumentSnapshot snapshot,
@@ -84,16 +84,16 @@ class NoteProvider extends ChangeNotifier with Helper {
     );
   }
 
-  /// بدء عملية البحث عن الملاحظات
+  /// Start the note search process.
   void searchNotes({required BuildContext context}) async {
     final querySnapshot = await FirebaseFirestoreController().read().first;
     final notes =
-        querySnapshot.docs.map((doc) => noteFromSnapshot(doc)).toList();
+    querySnapshot.docs.map((doc) => noteFromSnapshot(doc)).toList();
 
     showSearch(context: context, delegate: NoteSearchDelegate(notes: notes));
   }
 
-  /// حذف ملاحظة محددة من مجموعة الملاحظات
+  /// Delete a specific note from the collection.
   Future<void> deleteNote({
     required BuildContext context,
     required String noteId,
@@ -109,7 +109,7 @@ class NoteProvider extends ChangeNotifier with Helper {
     notifyListeners();
   }
 
-  /// دالة لتحديث حالة المفضلة: تضيف الملاحظة للمفضلة إذا لم تكن موجودة، أو تحذفها إذا كانت موجودة
+  /// Update favorite status: add the note to favorites if not already, or remove if it is.
   Future<void> updateFavoriteStatus({
     required BuildContext context,
     required Note note,
@@ -118,27 +118,27 @@ class NoteProvider extends ChangeNotifier with Helper {
       final isFav = await FirebaseFirestoreController().isFavorite(id: note.id);
       bool success;
       if (isFav) {
-        // إزالة الملاحظة من المفضلة
+        // Remove the note from favorites
         success = await FirebaseFirestoreController().removeFromFavorites(
           id: note.id,
         );
         appSnackBar(
           context: context,
           message:
-              success
-                  ? 'Removed from favorites.'
-                  : 'Failed to remove from favorites.',
+          success
+              ? 'Removed from favorites.'
+              : 'Failed to remove from favorites.',
           error: !success,
         );
       } else {
-        // إضافة الملاحظة إلى المفضلة
+        // Add the note to favorites
         success = await FirebaseFirestoreController().addToFavorites(
           note: note,
         );
         appSnackBar(
           context: context,
           message:
-              success ? 'Added to favorites.' : 'Failed to add to favorites.',
+          success ? 'Added to favorites.' : 'Failed to add to favorites.',
           error: !success,
         );
       }
@@ -152,7 +152,7 @@ class NoteProvider extends ChangeNotifier with Helper {
     }
   }
 
-  /// حذف ملاحظة من المفضلة بشكل منفصل
+  /// Delete a favorite note separately.
   Future<void> deleteFavoriteNote({
     required BuildContext context,
     required String noteId,
@@ -164,30 +164,30 @@ class NoteProvider extends ChangeNotifier with Helper {
     appSnackBar(
       context: context,
       message:
-          success
-              ? 'Favorite note deleted.'
-              : 'Failed to delete favorite note.',
+      success
+          ? 'Favorite note deleted.'
+          : 'Failed to delete favorite note.',
       error: !success,
     );
     notifyListeners();
   }
 
-  /// حذف جميع الملاحظات المفضلة
+  /// Delete all favorite notes.
   Future<void> deleteAllFavorites({required BuildContext context}) async {
     final success = await FirebaseFirestoreController().deleteAllFavorites();
 
     appSnackBar(
       context: context,
       message:
-          success
-              ? 'All favorites deleted.'
-              : 'Failed to delete all favorites.',
+      success
+          ? 'All favorites deleted.'
+          : 'Failed to delete all favorites.',
       error: !success,
     );
     notifyListeners();
   }
 
-  /// حذف جميع الملاحظات (غير المفضلة)
+  /// Delete all notes (non-favorite).
   Future<void> deleteAllNotes({required BuildContext context}) async {
     final success = await FirebaseFirestoreController().deleteAllNotes();
 
@@ -199,12 +199,12 @@ class NoteProvider extends ChangeNotifier with Helper {
     notifyListeners();
   }
 
-  /// حذف جميع الملاحظات والمفضلة معاً
+  /// Delete all notes and favorites together.
   Future<void> deleteAllNotesAndFavorites({
     required BuildContext context,
   }) async {
     final success =
-        await FirebaseFirestoreController().deleteAllNotesAndFavorites();
+    await FirebaseFirestoreController().deleteAllNotesAndFavorites();
 
     appSnackBar(
       context: context,
@@ -214,17 +214,18 @@ class NoteProvider extends ChangeNotifier with Helper {
     notifyListeners();
   }
 
-  /// دالة لإعادة تحميل الواجهة (يمكن استخدامها مع RefreshIndicator)
+  /// Refresh the UI (useful with a RefreshIndicator).
   Future<void> onRefresh() async {
     notifyListeners();
   }
 
-  /// ترجع أيقونة المفضلة المناسبة حسب الحالة (مملوءة إذا كانت مفضلة، فارغة إذا لا)
+  /// Get the appropriate favorite icon based on the current status.
   Future<Icon> getFavoriteIcon({required String noteId}) async {
     final isFav = await FirebaseFirestoreController().isFavorite(id: noteId);
     return Icon(isFav ? Icons.bookmark_outlined : Icons.bookmark_border);
   }
 
+  /// Create a new favorite note with the given parameters.
   Note favoriteNote({
     required String id,
     required String title,
@@ -238,6 +239,4 @@ class NoteProvider extends ChangeNotifier with Helper {
     note.createdAt = createdAt;
     return note;
   }
-
-
 }

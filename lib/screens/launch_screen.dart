@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+import '../generated/l10n.dart';
+
 class LaunchScreen extends StatefulWidget {
   const LaunchScreen({super.key});
 
@@ -11,12 +13,12 @@ class LaunchScreen extends StatefulWidget {
 }
 
 class _LaunchScreenState extends State<LaunchScreen> {
-
   UserProvider? _userProvider;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // Initializing the UserProvider to avoid repeated calls
     _userProvider ??= Provider.of<UserProvider>(context, listen: false);
   }
 
@@ -25,7 +27,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        // نبدأ الاستماع لحالة المستخدم بعد 3 ثواني كما هو معرف في UserProvider
+        // Start listening for the user's authentication state after 3 seconds as defined in UserProvider
         _userProvider!.startAuthListener(context: context);
       }
     });
@@ -33,7 +35,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
 
   @override
   void dispose() {
-    // إيقاف الاستماع للتغيرات بعد مغادرة الشاشة
+    // Stop listening for changes when the screen is disposed
     _userProvider!.stopAuthListener();
     super.dispose();
   }
@@ -60,7 +62,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
               width: double.infinity,
               height: 170,
               child: SvgPicture.asset(
-                'images/gummy-notebook.svg',
+                'images/gummy-notebook.svg',  // Assuming this is a logo or illustration
                 width: 200,
                 height: 200,
               ),
@@ -72,6 +74,11 @@ class _LaunchScreenState extends State<LaunchScreen> {
               strokeWidth: 3,
             ),
             SizedBox(height: 10),
+            // You can add text like "Please wait..." or any relevant information if necessary
+            Text(
+              S.of(context).pleaseWait, // Translation for the text
+              style: TextStyle(color: Colors.white),
+            ),
           ],
         ),
       ),

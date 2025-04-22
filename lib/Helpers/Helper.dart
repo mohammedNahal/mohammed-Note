@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
-/// Mixin يحتوي على أدوات مساعدة (Helper methods) قابلة لإعادة الاستخدام
+/// A mixin that provides reusable helper methods for UI components
 mixin Helper {
-  /// دالة لعرض SnackBar في واجهة المستخدم
+  /// Displays a SnackBar on the screen
   ///
-  /// [context] هو الـ BuildContext الحالي.
-  /// [message] هو النص الذي سيتم عرضه داخل الـ SnackBar.
-  /// [error] لتحديد لون الـ SnackBar: أحمر إذا كان خطأ، أخضر إذا كانت العملية ناجحة.
+  /// [context] is the current BuildContext.
+  /// [message] is the text to be displayed inside the SnackBar.
+  /// [error] determines the color of the SnackBar:
+  /// - Red for error messages
+  /// - Green for success messages
   void appSnackBar({
     required BuildContext context,
     required String? message,
@@ -16,7 +18,7 @@ mixin Helper {
       SnackBar(
         content: Text(message ?? ''),
         backgroundColor: error ? Colors.red : Colors.green,
-        behavior: SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.floating, // Makes it float above content
       ),
     );
   }
