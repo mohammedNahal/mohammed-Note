@@ -1,4 +1,5 @@
 import 'package:final_project_note_app/main/note_app.dart';
+import 'package:final_project_note_app/prefs/shared_preferance_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,7 @@ Future<void> main() async {
   // Initialize Firebase before running the app
   await Firebase.initializeApp();
 
+  await SharedPreferenceController().initSharedPref();
   // Run the NoteApp application
   runApp(const NoteApp());
 }

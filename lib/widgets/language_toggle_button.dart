@@ -2,7 +2,7 @@ import 'package:final_project_note_app/themes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/locale_provider.dart';
+import '../provider/settings_provider.dart';
 import '../generated/l10n.dart';
 
 class LanguageToggleButton extends StatelessWidget {
@@ -11,7 +11,7 @@ class LanguageToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final localeProvider = Provider.of<LocaleProvider>(context);
+    final localeProvider = Provider.of<SettingsProvider>(context);
 
     return IconButton(
       style: ButtonStyle(
@@ -19,7 +19,7 @@ class LanguageToggleButton extends StatelessWidget {
         backgroundColor: WidgetStatePropertyAll(AppThemes.lightTheme().primaryColor),
       ),
       onPressed: () {
-        localeProvider.setLocale(
+        localeProvider.changeLanguage(
           isArabic ? Locale('en') : Locale('ar'),
         ); // Update the language
       },

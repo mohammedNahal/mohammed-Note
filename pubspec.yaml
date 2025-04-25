@@ -48,6 +48,10 @@ dependencies:
 
   # Allows defining custom HEX colors in your UI.
   hexcolor: ^3.0.1
+  
+  # Enables local key-value storage for persisting user preferences.
+  shared_preferences: ^2.5.3
+
 
 # --------------------
 # Development dependencies (for testing and linting)

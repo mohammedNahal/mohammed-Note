@@ -42,5 +42,13 @@
   "helpAndSupport": "المساعدة والدعم",
   "logout": "تسجيل الخروج",
   "addToFavorite": "أضف إلى المفضلة",
-  "noNotes": "لا توجد ملاحظات."
+  "noNotes": "لا توجد ملاحظات.",
+  "setting": "الإعدادات",
+  "lang": "لغة التطبيق",
+  "ar": "Arabic",
+  "en": "English",
+  "theme": "السمة",
+  "light": "فاتح",
+  "dark": "داكن",
+  "chooseLang": "اختر اللغة"
 }

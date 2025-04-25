@@ -1,10 +1,12 @@
+import 'package:final_project_note_app/prefs/shared_preferance_controller.dart';
+import 'package:final_project_note_app/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 // Localization
 import 'package:final_project_note_app/generated/l10n.dart';
-import 'package:final_project_note_app/provider/locale_provider.dart';
+import 'package:final_project_note_app/provider/settings_provider.dart';
 
 // Providers
 import 'package:final_project_note_app/provider/note_provider.dart';
@@ -34,7 +36,7 @@ class NoteApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => NoteProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
       child: const _AppContent(),
     );
@@ -48,7 +50,7 @@ class _AppContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.watch<LocaleProvider>().locale;
+    final locale = context.watch<SettingsProvider>().locale;
 
     return MaterialApp(
       title: 'Note',
@@ -70,7 +72,7 @@ class _AppContent extends StatelessWidget {
       // Theming
       theme: AppThemes.lightTheme(),
       darkTheme: AppThemes.darkTheme(),
-      themeMode: ThemeMode.system,
+      themeMode: SharedPreferenceController().getTheme,
 
       // App routing
       initialRoute: '/',
@@ -83,6 +85,7 @@ class _AppContent extends StatelessWidget {
         '/forget_pass/send_success': (context) => const SendPasswordSuccessScreen(),
         '/home': (context) => const NotesScreen(),
         '/myNote': (context) => const MyNoteScreen(),
+        '/settings': (context) => const SettingsScreen(),
       },
     );
   }

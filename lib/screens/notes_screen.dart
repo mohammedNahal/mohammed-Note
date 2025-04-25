@@ -12,7 +12,6 @@ import '../generated/l10n.dart';
 import '../model/note_model.dart';
 import '../provider/note_provider.dart';
 
-
 class NotesScreen extends StatelessWidget {
   const NotesScreen({super.key});
 
@@ -29,7 +28,9 @@ class NotesScreen extends StatelessWidget {
   // Builds the AppBar with title and search icon
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      title: Text(S.of(context).notes), // Translated text
+      title: Text(S
+          .of(context)
+          .notes), // Translated text
       actions: [
         IconButton(
           onPressed: () => _onSearchNotesPressed(context),
@@ -45,33 +46,66 @@ class NotesScreen extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            color: AppThemes.lightTheme().primaryColor,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height * 0.3,
+            color: AppThemes
+                .lightTheme()
+                .primaryColor,
           ),
           _buildDrawerItem(
             context,
             icon: Icons.favorite,
-            title: S.of(context).myNotes, // Translated text
+            title: S
+                .of(context)
+                .myNotes, // Translated text
             onTap: () => Navigator.pushNamed(context, '/myNote'),
           ),
+          Divider(thickness: 0.5, color: Colors.grey),
+
           _buildDrawerItem(
             context,
             icon: Icons.delete,
-            title: S.of(context).deleteAllNotes, // Translated text
+            title: S
+                .of(context)
+                .deleteAllNotes, // Translated text
             onTap: () {},
           ),
+          Divider(thickness: 0.5, color: Colors.grey),
+
           _buildDrawerItem(
             context,
             icon: Icons.help,
-            title: S.of(context).helpAndSupport, // Translated text
+            title: S
+                .of(context)
+                .helpAndSupport, // Translated text
             onTap: () {},
           ),
           Divider(thickness: 0.5, color: Colors.grey),
           _buildDrawerItem(
             context,
+            icon: Icons.settings,
+            title: S
+                .of(context)
+                .setting,
+            onTap: () =>
+                Navigator.pushNamed(context, '/settings')
+            ,
+          ),
+          _buildDrawerItem(
+            context,
             icon: Icons.logout,
-            title: S.of(context).logout, // Translated text
-            onTap: () => Provider.of<UserProvider>(context, listen: false).logout(context: context),
+            title: S
+                .of(context)
+                .logout,
+            // Translated text
+            onTap:
+                () =>
+                Provider.of<UserProvider>(
+                  context,
+                  listen: false,
+                ).logout(context: context),
             iconColor: Colors.red,
             titleColor: Colors.red,
           ),
@@ -83,10 +117,14 @@ class NotesScreen extends StatelessWidget {
   // Builds the FloatingActionButton to create a new note
   FloatingActionButton _buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const CreateUpdateNoteScreen()),
-      ),
+      onPressed:
+          () =>
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const CreateUpdateNoteScreen(),
+            ),
+          ),
       child: const Icon(Icons.edit),
     );
   }
@@ -108,11 +146,15 @@ class NotesScreen extends StatelessWidget {
   }
 
   // Builds the GridView to display the notes
-  Widget _buildNotesGrid(BuildContext context, List<QueryDocumentSnapshot> data) {
+  Widget _buildNotesGrid(BuildContext context,
+      List<QueryDocumentSnapshot> data,) {
     return RefreshIndicator(
-      onRefresh: () => Provider.of<NoteProvider>(context, listen: false).onRefresh(),
+      onRefresh:
+          () => Provider.of<NoteProvider>(context, listen: false).onRefresh(),
       child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
         itemCount: data.length,
         itemBuilder: (context, index) {
           return _buildNoteCard(context, data[index], index);
@@ -122,8 +164,11 @@ class NotesScreen extends StatelessWidget {
   }
 
   // Creates a card for each note
-  Widget _buildNoteCard(BuildContext context, QueryDocumentSnapshot noteData, int index) {
-    Color cardColor = Colors.primaries[index % Colors.primaries.length].shade100;
+  Widget _buildNoteCard(BuildContext context,
+      QueryDocumentSnapshot noteData,
+      int index,) {
+    Color cardColor =
+        Colors.primaries[index % Colors.primaries.length].shade100;
 
     return GestureDetector(
       onTap: () => _onTapNote(context, noteData),
@@ -149,13 +194,19 @@ class NotesScreen extends StatelessWidget {
   }
 
   // Builds the note header (title and popup menu for actions)
-  Widget _buildNoteHeader(BuildContext context, QueryDocumentSnapshot noteData, int index) {
+  Widget _buildNoteHeader(BuildContext context,
+      QueryDocumentSnapshot noteData,
+      int index,) {
     return Row(
       children: [
         Expanded(
           child: Text(
             '${noteData.get('title')}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -166,19 +217,41 @@ class NotesScreen extends StatelessWidget {
   }
 
   // Creates a popup menu with options (Delete and Add to Favorites)
-  Widget _buildPopupMenu(BuildContext context, QueryDocumentSnapshot noteData, int index) {
+  Widget _buildPopupMenu(BuildContext context,
+      QueryDocumentSnapshot noteData,
+      int index,) {
     return PopupMenuButton<String>(
       onSelected: (value) => _onPopupMenuSelected(context, value, noteData),
-      itemBuilder: (BuildContext context) => [
-        _buildPopupMenuItem(context, value: 'delete', icon: Icons.delete, text: S.of(context).delete),
-        _buildPopupMenuItem(context, value: 'favorite', icon: Icons.bookmark_border, text: S.of(context).addToFavorite),
+      itemBuilder:
+          (BuildContext context) =>
+      [
+        _buildPopupMenuItem(
+          context,
+          value: 'delete',
+          icon: Icons.delete,
+          text: S
+              .of(context)
+              .delete,
+        ),
+        _buildPopupMenuItem(
+          context,
+          value: 'favorite',
+          icon: Icons.bookmark_border,
+          text: S
+              .of(context)
+              .addToFavorite,
+        ),
       ],
       child: const Icon(Icons.more_vert, size: 18),
     );
   }
 
   // Builds individual PopupMenuItem for actions
-  PopupMenuItem<String> _buildPopupMenuItem(BuildContext context, {required String value, required IconData icon, required String text}) {
+  PopupMenuItem<String> _buildPopupMenuItem(BuildContext context, {
+    required String value,
+    required IconData icon,
+    required String text,
+  }) {
     return PopupMenuItem(
       value: value,
       child: Row(
@@ -192,19 +265,22 @@ class NotesScreen extends StatelessWidget {
   }
 
   // Handles the selected action from the popup menu (Delete or Add to Favorites)
-  Future<void> _onPopupMenuSelected(BuildContext context, String value, QueryDocumentSnapshot noteData) async {
+  Future<void> _onPopupMenuSelected(BuildContext context,
+      String value,
+      QueryDocumentSnapshot noteData,) async {
     if (value == 'delete') {
-      await Provider.of<NoteProvider>(context, listen: false).deleteNote(
-        context: context,
-        noteId: noteData.id,
-      );
+      await Provider.of<NoteProvider>(
+        context,
+        listen: false,
+      ).deleteNote(context: context, noteId: noteData.id);
     } else if (value == 'favorite') {
       await _addToFavorites(context, noteData);
     }
   }
 
   // Adds the note to favorites
-  Future<void> _addToFavorites(BuildContext context, QueryDocumentSnapshot noteData) async {
+  Future<void> _addToFavorites(BuildContext context,
+      QueryDocumentSnapshot noteData,) async {
     final favoriteNote = Note(
       id: noteData.id,
       title: noteData.get('title'),
@@ -212,10 +288,10 @@ class NotesScreen extends StatelessWidget {
       createdAt: noteData.get('createdAt'),
     );
 
-    await Provider.of<NoteProvider>(context, listen: false).updateFavoriteStatus(
-      context: context,
-      note: favoriteNote,
-    );
+    await Provider.of<NoteProvider>(
+      context,
+      listen: false,
+    ).updateFavoriteStatus(context: context, note: favoriteNote);
   }
 
   // Displays the note's details
@@ -245,9 +321,19 @@ class NotesScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.edit_calendar_outlined, color: Colors.grey, size: 50),
+          const Icon(
+            Icons.edit_calendar_outlined,
+            color: Colors.grey,
+            size: 50,
+          ),
           const SizedBox(height: 10),
-          Text(S.of(context).noNotes, style: const TextStyle(color: Colors.grey)), // Translated text
+          Text(
+            S
+                .of(context)
+                .noNotes,
+            style: const TextStyle(color: Colors.grey),
+          ),
+          // Translated text
         ],
       ),
     );
@@ -255,19 +341,28 @@ class NotesScreen extends StatelessWidget {
 
   // Handles the note tap event (when the user clicks on a note)
   void _onTapNote(BuildContext context, QueryDocumentSnapshot noteData) {
-    Provider.of<NoteProvider>(context, listen: false).onTapNote(
-      context: context,
-      snapshot: noteData,
-    );
+    Provider.of<NoteProvider>(
+      context,
+      listen: false,
+    ).onTapNote(context: context, snapshot: noteData);
   }
 
   // Handles the search notes action (search functionality)
   void _onSearchNotesPressed(BuildContext context) {
-    Provider.of<NoteProvider>(context, listen: false).searchNotes(context: context);
+    Provider.of<NoteProvider>(
+      context,
+      listen: false,
+    ).searchNotes(context: context);
   }
 
   // Creates a drawer item with icon and title
-  ListTile _buildDrawerItem(BuildContext context, {required IconData icon, required String title, required VoidCallback onTap, Color? iconColor, Color? titleColor}) {
+  ListTile _buildDrawerItem(BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    Color? iconColor,
+    Color? titleColor,
+  }) {
     return ListTile(
       onTap: onTap,
       leading: Icon(icon, color: iconColor),
