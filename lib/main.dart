@@ -1,5 +1,5 @@
-import 'package:final_project_note_app/main/note_app.dart';
-import 'package:final_project_note_app/prefs/shared_preferance_controller.dart';
+import 'package:final_project_note_app/presentation/app/note_app.dart';
+import 'package:final_project_note_app/data/datasources/local/shared_preferance_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
